@@ -27,7 +27,7 @@ def peticionApi(request,id=0):
 
         for i in peticion:
             dictResponse["PeticionId"] = i.PeticionId
-            dictResponse["PeticionDate"] = str(i.PeticionDate)
+            dictResponse["PeticionDate"] = i.PeticionDate
             dictResponse["PeticionMethod"] = i.PeticionMethod
             dictResponse["PeticionConsult"] = i.PeticionConsult
             dictResponse["PeticionDataReturn"] = i.PeticionDataReturn
@@ -47,7 +47,7 @@ def peticionApi(request,id=0):
         print(peticion_srlzr)
         if peticion_srlzr.is_valid():
             
-            peticion.PeticionDate = str(peticion_data['PeticionDate']),
+            peticion.PeticionDate = peticion_data['PeticionDate'],
             peticion.PeticionMethod = peticion_data['PeticionMethod'],
             peticion.PeticionConsult = peticion_data['PeticionConsult'],
             peticion.PeticionDataReturn = peticion_data['PeticionDataReturn']
@@ -62,6 +62,12 @@ def peticionApi(request,id=0):
         peticion = Peticion.objects.get(PeticionId=id)
         peticion.delete()
         return JsonResponse("Deleted Succesfully", safe=False)
+
+
+@csrf_exempt
+def unaPeticion(request,id=0):
+    if request.method == 'GET':
+        print("")
 
 @csrf_exempt
 def mostrarUsuarios(request):
@@ -114,36 +120,36 @@ def mostrarPublicaciones(request):
 def fotosPorUsuario(request, id=0):
     if request.method == 'GET':
         method = "GET"
-        endpoint_1 = f"https://jsonplaceholder.typicode.com/albums?userId={id}"
-        endpoint_2 = "https://jsonplaceholder.typicode.com/photos?albumId="
+        urlAlbums = f"https://jsonplaceholder.typicode.com/albums?userId={id}"
+        urlPhotos = "https://jsonplaceholder.typicode.com/photos?albumId="
         timestamp = datetime.now()
 
-        response_1 = requests.get(endpoint_1)
-        response_data_1 = response_1.json()
+        responseAlbums = requests.get(urlAlbums)
+        dataResponseAlbums = responseAlbums.json()
 
-        list_1 = []
-        list_2 = []
+        listaAlbums = []
+        listPhotos = []
 
-        for obj in response_data_1:
+        for obj in dataResponseAlbums:
             if obj["userId"] == int(id):
-                list_1.append(obj["id"])
+                listaAlbums.append(obj["id"])
 
-        for id_ in list_1:
-            url = endpoint_2 + str(id_)
-            response_2 = requests.get(url)
-            response_data_2 = response_2.json()
-            list_2.extend(response_data_2)
+        for id_ in listaAlbums:
+            url = urlPhotos + str(id_)
+            responsePhotos = requests.get(url)
+            dataResponsePhotos = responsePhotos.json()
+            listPhotos.extend(dataResponsePhotos)
 
-        json_data = list_2
+        data = listPhotos
 
         info = Peticion(
             PeticionDate=timestamp.date(),
             PeticionMethod=method,
-            PeticionConsult=endpoint_2,
-            PeticionDataReturn=json_data
+            PeticionConsult=urlPhotos,
+            PeticionDataReturn=data
         )
         info.save()
 
-        return JsonResponse(json_data, safe=False)
+        return JsonResponse(data, safe=False)
     else:
         return JsonResponse({"error": "Método no permitido"}, status=405)

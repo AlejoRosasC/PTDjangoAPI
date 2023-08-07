@@ -13,6 +13,7 @@ from django.urls import path
 from RestApiApp import views
 
 urlpatterns = [
+    path('unaPeticion/<id>', views.unaPeticion),
     path('peticionApi/', views.peticionApi),
     path('peticionApi/<id>', views.peticionApi),
     path('mostrarUsuarios/', views.mostrarUsuarios),
