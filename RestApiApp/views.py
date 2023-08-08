@@ -63,12 +63,6 @@ def peticionApi(request,id=0):
         peticion.delete()
         return JsonResponse("Deleted Succesfully", safe=False)
 
-
-@csrf_exempt
-def unaPeticion(request,id=0):
-    if request.method == 'GET':
-        print("")
-
 @csrf_exempt
 def mostrarUsuarios(request):
     if request.method == 'GET':
